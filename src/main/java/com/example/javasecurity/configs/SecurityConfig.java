@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/**").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/user/save").hasRole("USER")
-                .antMatchers("/wide").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/wide").permitAll()
                 .and()
                 .httpBasic()
                 .and()
