@@ -10,16 +10,17 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class User implements UserDetails {
+public class Client implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(unique = true)
-    private String name;
+    private String login;
     private String pass;
-    private String role = "ROLE_USER";
+    private boolean isEnable = true;
 
-    public User() {
+    public Client() {
     }
 
     public int getId() {
@@ -30,12 +31,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLogin() {
+        return login;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getPass() {
@@ -46,16 +47,25 @@ public class User implements UserDetails {
         this.pass = pass;
     }
 
-    public String getRole() {
-        return role;
+    public boolean isEnable() {
+        return isEnable;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setEnable(boolean enable) {
+        isEnable = enable;
     }
 
 
+//    <-------------------------------------------------->
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return authorities;
+    }
 
     @Override
     public String getPassword() {
@@ -64,14 +74,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role));
-        return authorities;
+        return login;
     }
 
     @Override
@@ -91,6 +94,16 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnable;
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", pass='" + pass + '\'' +
+                ", isEnable=" + isEnable +
+                '}';
     }
 }

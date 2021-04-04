@@ -36,16 +36,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/signUp").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasRole("USER")
-                .antMatchers("/wide").permitAll()
-                .antMatchers(HttpMethod.POST, "/register").permitAll()
                 .and()
                 .httpBasic()
                 .and()
