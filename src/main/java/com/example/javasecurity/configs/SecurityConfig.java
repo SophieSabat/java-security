@@ -31,27 +31,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication().withUser("qwe").password("{noop}qwe").roles("USER");
     }
 
-
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-
+    public CorsConfigurationSource corsConfigurationSource () {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:3000"));
         configuration.addAllowedHeader("*");
         configuration.setAllowedMethods(Arrays.asList(
-                HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
+                HttpMethod.GET.name(),
                 HttpMethod.PUT.name(),
                 HttpMethod.PATCH.name(),
                 HttpMethod.DELETE.name(),
                 HttpMethod.OPTIONS.name()
         ));
         configuration.addExposedHeader("Authorization");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -68,9 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         new RequestProcessingJWTFilter(),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(
-                        new LoginFilter("/login", authTokenDAO, authenticationManager()),
+                        new LoginFilter("/login", authTokenDAO , authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class);
-
-
     }
 }

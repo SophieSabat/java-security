@@ -25,7 +25,9 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private AuthTokenDAO authTokenDAO;
 
-    public LoginFilter(String url, AuthTokenDAO authTokenDAO, AuthenticationManager authenticationManager) {
+    public LoginFilter(String url,
+                       AuthTokenDAO authTokenDAO,
+                       AuthenticationManager authenticationManager) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authenticationManager);
         this.authTokenDAO = authTokenDAO;
@@ -37,21 +39,19 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         UserDTO userDTO = new ObjectMapper().readValue(requestBody, UserDTO.class);
         System.out.println(userDTO);
         return getAuthenticationManager().authenticate(
-                new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword()));
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String jwttoken = Jwts.builder()
                 .setSubject(authResult.getName())
-                // закодували
-                .signWith(SignatureAlgorithm.HS512, "asd".getBytes())
-                // термін дії токена
-                // .setExpiration(new Date(System.currentTimeMillis() + 200000));
+                .signWith(SignatureAlgorithm.HS512, "yes".getBytes())
+//                .setExpiration(new Date(System.currentTimeMillis() + 200000))
                 .compact();
-        authTokenDAO.save(new AuthToken(jwttoken));
 
+        authTokenDAO.save(new AuthToken(jwttoken));
         response.addHeader("Authorization", "Bearer " + jwttoken);
+        chain.doFilter(request, response);
     }
 }

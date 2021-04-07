@@ -1,6 +1,4 @@
-
 package com.example.javasecurity.configs;
-
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,8 +13,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-
 public class RequestProcessingJWTFilter extends GenericFilterBean {
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         System.out.println("do filter");
@@ -27,23 +25,19 @@ public class RequestProcessingJWTFilter extends GenericFilterBean {
         System.out.println(token);
 
         if (token != null && token.startsWith("Bearer")) {
-            String clearToken = token.replace("Bearer ", "");
-            // розпарсили
+            String cleanToken = token.replace("Bearer ", "");
             String tokenData = Jwts.parser()
                     .setSigningKey("yes".getBytes())
-                    .parseClaimsJws(clearToken)
+                    .parseClaimsJws(cleanToken)
                     .getBody()
                     .getSubject();
             System.out.println(tokenData);
 
-            if (tokenData.equals("asd"))
+            if (tokenData.equals("asd")) {
                 authentication = new UsernamePasswordAuthenticationToken(tokenData, "asd");
-
-            if (tokenData.equals("qwe"))
-                authentication = new UsernamePasswordAuthenticationToken(tokenData, "qwe");
+            }
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
-
     }
 }
