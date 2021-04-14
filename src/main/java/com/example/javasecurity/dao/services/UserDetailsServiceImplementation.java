@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 @Qualifier("udsi")
+@AllArgsConstructor
 public class UserDetailsServiceImplementation implements UserDetailsService {
 
     private UserDAO userDAO;

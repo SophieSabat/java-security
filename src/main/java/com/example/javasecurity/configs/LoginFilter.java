@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private UserDAO userDAO;
@@ -29,7 +28,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         this.userDAO = userDAO;
     }
 
-
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         User user = null;
@@ -38,18 +36,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         Authentication authenticate = getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
                         user.getPassword()
-                ));
+                )
+        );
+
+        System.out.println(authenticate);
         return authenticate;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String token = Jwts.builder()
+        String token = Jwts
+                .builder()
                 .setSubject(authResult.getName())
                 .signWith(SignatureAlgorithm.HS512, "okten".getBytes())
                 .compact();
@@ -60,7 +61,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         authToken.setUser(user);
         user.getAuthTokens().add(authToken);
         userDAO.save(user);
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Authorizatin", "Bearer " + token);
         chain.doFilter(request, response);
     }
 }

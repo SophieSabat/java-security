@@ -40,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
@@ -58,8 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
-                HttpMethod.PUT.name(),
                 HttpMethod.PATCH.name(),
+                HttpMethod.PUT.name(),
                 HttpMethod.DELETE.name(),
                 HttpMethod.OPTIONS.name()
         ));
@@ -77,8 +77,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.POST, "/save").permitAll()
+                .antMatchers("/email/**", "/activate/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/save").permitAll()
                 .antMatchers(HttpMethod.GET, "/test").hasRole("USER")
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .and()
